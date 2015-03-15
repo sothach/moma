@@ -2,6 +2,7 @@ package org.nulleins.modart;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
@@ -30,18 +31,21 @@ public class ArtworkView extends View {
   }
 
   /** draw randomly colored and sized rectangles, randomly on a spiral path */
-  private void createArtwork(Canvas canvas, final int width, final int height) {
+  private void createArtwork(final Canvas canvas, final int width, final int height) {
     float r = 1;
     float theta = 0;
     while(theta < 360.0f) {
       // convert polar to cartesian coordinates
-      Point point = new Point(
+      final Point point = new Point(
           scale(r * (float)Math.cos(theta), 200, width),
           scale(r * (float)Math.sin(theta), 200, height));
+      brush.setARGB(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
       paintRectangle(canvas, point);
-      theta += randFloat(0.01f, (float)complexity); // was: 1.2f);
-      r += randFloat(0.01f, (float)complexity); // was: 2.0f
+      theta += randFloat(0.01f, (float)complexity);
+      r += randFloat(0.01f, (float)complexity);
     }
+    brush.setColor(Color.WHITE);
+    paintRectangle(canvas, new Point(randInt(1, width),randInt(1,height)));
   }
 
   private static int scale ( final float value, final float baseMax, final int bound) {
@@ -58,7 +62,6 @@ public class ArtworkView extends View {
 
   /** paint one rectangle, use random color */
   private void paintRectangle(final Canvas canvas, final Point point) {
-    brush.setARGB(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
     int size = randInt(1,50);
     canvas.drawRect(point.x, point.y, point.x + (int)(size*0.8), point.y + (int)(size*1.2), brush);
   }
