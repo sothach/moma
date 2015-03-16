@@ -15,9 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SeekBar;
-import android.widget.Toast;
 import org.nulleins.Modart.R;
 
 import java.io.File;
@@ -26,7 +24,7 @@ import java.io.IOException;
 
 public class ModartActivity extends Activity {
 
-  private SeekBar seekBar;
+  private SeekBar sparsityBar;
   private SensorManager mSensorManager;
   private float mAccel; // acceleration apart from gravity
   private float mAccelCurrent; // current acceleration including gravity
@@ -34,7 +32,7 @@ public class ModartActivity extends Activity {
   private ArtworkView artCanvas;
 
   @Override
-  public void onCreate(Bundle savedInstanceState) {
+  public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
 
@@ -47,16 +45,18 @@ public class ModartActivity extends Activity {
     mAccelLast = SensorManager.GRAVITY_EARTH;
 
     artCanvas = (ArtworkView)findViewById(R.id.artcanvas);
-    seekBar = (SeekBar) findViewById(R.id.seekBar);
-    seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+    sparsityBar = (SeekBar) findViewById(R.id.seekBar);
+    sparsityBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
       public void onProgressChanged(final SeekBar seekBar, final int value, final boolean fromUser) {
-        artCanvas.setComplexity(value);
+        artCanvas.setSparsity(value);
         artCanvas.invalidate();
       }
+
       @Override
       public void onStartTrackingTouch(final SeekBar seekBar) {
       }
+
       @Override
       public void onStopTrackingTouch(final SeekBar seekBar) {
       }
@@ -66,7 +66,7 @@ public class ModartActivity extends Activity {
   @Override
   public boolean onCreateOptionsMenu(final Menu menu) {
     getMenuInflater().inflate(R.menu.menu, menu);
-    return true;
+    return super.onCreateOptionsMenu(menu);
   }
 
   @Override
@@ -83,24 +83,24 @@ public class ModartActivity extends Activity {
     }
   }
 
+  /** display the 'more information' dialog, with buttons
+    * to goto to MOMA or cancel */
   private void moreInfo() {
     final Dialog dialog = new Dialog(this);
 
     dialog.setContentView(R.layout.information);
-    dialog.setTitle("More Information");
+    dialog.setTitle(getResources().getText(R.string.moma_dialog_title));
 
-    final Button come2moma=(Button)dialog.findViewById(R.id.come2moma);
-    come2moma.setOnClickListener(new View.OnClickListener() {
+    dialog.findViewById(R.id.come2moma).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(final View view) {
         gotoMoma();
       }
     });
-    final Button procrastinate=(Button)dialog.findViewById(R.id.procrastinate);
-    procrastinate.setOnClickListener(new View.OnClickListener() {
+    dialog.findViewById(R.id.procrastinate).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(final View view) {
-          dialog.cancel();
+        dialog.cancel();
       }
     });
     dialog.show();
@@ -128,17 +128,21 @@ public class ModartActivity extends Activity {
       bitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(imageFile));
       return imageFile;
     } catch (IOException e) {
-      Log.e("MOD", "Failed to store image to share: " + e.getMessage());
+      Log.w("MOD", "Failed to store image to share: " + e.getMessage());
       return null;
     }
   }
 
+  /** launch browser to MOMA page */
   private void gotoMoma() {
     final Intent browserIntent = new Intent(Intent.ACTION_VIEW,
         Uri.parse(getResources().getString(R.string.moma_landing_url)));
     startActivity(browserIntent);
   }
 
+  private static final float SHAKE_THRESHOLD = 20.0f;
+
+  /** handle shaking: if greater than threshold, cause the art canvas to be redrawn */
   private final SensorEventListener mSensorListener = new SensorEventListener() {
     @Override
     public void onSensorChanged(final SensorEvent se) {
@@ -149,7 +153,7 @@ public class ModartActivity extends Activity {
       mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
       final float delta = mAccelCurrent - mAccelLast;
       mAccel = mAccel * 0.9f + delta * 0.1f; // low-cut filter
-      if(Math.abs(delta) > 20.0) {
+      if(Math.abs(delta) > SHAKE_THRESHOLD) {
         findViewById(R.id.artcanvas).invalidate();
       }
     }

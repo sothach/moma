@@ -3,12 +3,11 @@
     <string name="app_name">Android Art</string>
     <string name="app_title">100 Doors</string>
     <string name="moma_no">Not Now</string>
-    <string name="moma_yes">Visit MOMA</string>
+    <string name="moma_yes">Visit MoMA</string>
     <string name="moma_invite">Would you like to learn more about modern art?</string>
-    <string name="moma_dialog_title">ModArt</string>
+    <string name="moma_dialog_title">Android Modern Art</string>
     <string name="share_artwork">Share</string>
     <string name="more_info">More Information</string>
     <string name="send_to">Send to…</string>
-    <string name="moma_landing_url">http://www.moma.org/explore</string>
     <string name="shake_tip">Shake me to create new art!</string>
 </resources>

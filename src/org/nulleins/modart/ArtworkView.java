@@ -7,17 +7,13 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Toast;
-import org.nulleins.Modart.R;
 
 import java.util.Random;
 
 public class ArtworkView extends View {
 
   private Paint brush = new Paint(Paint.ANTI_ALIAS_FLAG);
-  private Toast toast = Toast.makeText(getContext(),
-      getResources().getString(R.string.shake_tip), Toast.LENGTH_SHORT);
-  private int complexity = 2;
+  private int sparsity = 2;
 
   public ArtworkView(final Context context, final AttributeSet attrs) {
     super(context, attrs);
@@ -26,7 +22,6 @@ public class ArtworkView extends View {
   @Override
   public void onDraw(final Canvas canvas) {
     createArtwork(canvas, getMeasuredWidth(), getMeasuredHeight());
-    toast.show();
     canvas.save ();
   }
 
@@ -41,8 +36,8 @@ public class ArtworkView extends View {
           scale(r * (float)Math.sin(theta), 200, height));
       brush.setARGB(255, rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
       paintRectangle(canvas, point);
-      theta += randFloat(0.01f, (float)complexity);
-      r += randFloat(0.01f, (float)complexity);
+      theta += randFloat(0.01f, (float) sparsity);
+      r += randFloat(0.01f, (float) sparsity);
     }
     brush.setColor(Color.WHITE);
     paintRectangle(canvas, new Point(randInt(1, width),randInt(1,height)));
@@ -66,7 +61,7 @@ public class ArtworkView extends View {
     canvas.drawRect(point.x, point.y, point.x + (int)(size*0.8), point.y + (int)(size*1.2), brush);
   }
 
-  public void setComplexity(final int value) {
-    complexity = value+1;
+  public void setSparsity(final int value) {
+    sparsity = value+1;
   }
 }
