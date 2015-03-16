@@ -23,5 +23,5 @@ This app displays a canvas of randomly-drawn colored rectangles.
 ## Implementation
 The art is created in a custom view, using this technique:
  * Starting at the top left, a spiral path is calculated (increasing both the angle 'theta', and radius 'r')
- * The increment of both thea and 'r' is randomized, infuenced by the 'sparsity' slider value
+ * The increment of both thea and 'r' is randomized, influenced by the 'sparsity' slider value
  * At each point, a rectangle is drawn, of a random size and color
