@@ -5,9 +5,10 @@
     android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="17" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher">
+        android:icon="@drawable/android">
         <activity
             android:name="org.nulleins.modart.ModartActivity"
             android:label="@string/app_name">
